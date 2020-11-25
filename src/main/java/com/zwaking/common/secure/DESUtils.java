@@ -1,6 +1,5 @@
 package com.zwaking.common.secure;
 
-import com.zwaking.common.utils.Base64Coder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
@@ -10,7 +9,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Security;
 
 /**
- * @author zhouy
+ * @author waking
+ * @date 2020/11/25 11:25
  */
 public class DESUtils {
 

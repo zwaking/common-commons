@@ -1,5 +1,9 @@
 package com.zwaking.common.exception;
 
+/**
+ * @author waking
+ * @date 2020/11/25 11:25
+ */
 public class SBizException extends Exception {
     private static final long serialVersionUID = 1L;
 

@@ -11,9 +11,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * @author waking
+ * @date 2020/11/25 11:25
  * @title 日期/时间工具类
  * @description 提供有关日期/时间的常用静态操作方法
- * @author Lincoln
  */
 
 public class DateTimeUtils {

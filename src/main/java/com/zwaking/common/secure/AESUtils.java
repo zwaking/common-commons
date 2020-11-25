@@ -10,7 +10,8 @@ import java.security.Provider;
 import java.security.Security;
 
 /**
- * @author zhouy
+ * @author waking
+ * @date 2020/11/25 11:25
  */
 public class AESUtils {
     /**
@@ -140,7 +141,8 @@ public class AESUtils {
      * @return
      * @throws Exception
      */
-    public byte[] encryptToHex(byte[] mingTexts, String keyHex, Provider provider, String algorithm, String providerName) throws Exception {
+    public byte[] encryptToHex(byte[] mingTexts, String keyHex, Provider provider, String algorithm,
+        String providerName) throws Exception {
         byte[] key = HexPlus.decode(keyHex);
 
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
@@ -163,7 +165,8 @@ public class AESUtils {
      * @return
      * @throws Exception
      */
-    public String decryptToHex(byte[] miTexts, String keyHex, Provider provider, String algorithm, String providerName) throws Exception {
+    public String decryptToHex(byte[] miTexts, String keyHex, Provider provider, String algorithm, String providerName)
+        throws Exception {
         byte[] key = HexPlus.decode(keyHex);
 
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");

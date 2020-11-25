@@ -1,5 +1,6 @@
 package com.zwaking.common.secure;
 
+import com.zwaking.common.exception.BizException;
 import com.zwaking.common.utils.Base64Coder;
 import com.zwaking.common.utils.HexPlus;
 
@@ -18,13 +19,12 @@ import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * @author zhouy
+ * @author waking
+ * @date 2020/11/25 11:25
  */
 public class RSAUtils {
 
     public String[] TRANSFORMATIONS = {"RSA/ECB/PKCS1Padding"};
-
-    //public static final String TRANSFORMATION_RSAECBPKCS1PADDING = "RSA/ECB/PKCS1Padding";
 
     //加密算法
     private static final String ALGORITHM = "RSA";
@@ -176,7 +176,7 @@ public class RSAUtils {
             byte[] bytes = Base64Coder.decodeBASE64(stringBuffer.toString());
             keyStr = HexPlus.encode(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new BizException("取得密钥字符串出错", e);
         } finally {
             if (bufferedReader != null) {
                 try {
@@ -202,7 +202,7 @@ public class RSAUtils {
             KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
             publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new BizException("获取公钥Key出错", e);
         }
         return publicKey;
     }
@@ -230,7 +230,7 @@ public class RSAUtils {
             KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
             privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new BizException("取得密钥Key出错", e);
         }
         return privateKey;
     }
@@ -273,8 +273,8 @@ public class RSAUtils {
                 byte[] outBytes = cipher.doFinal(inBytes);
                 returnStr += HexPlus.encode(outBytes);
             }
-        } catch (RuntimeException e) {
-            throw new RuntimeException("加密出错", e);
+        } catch (BizException e) {
+            throw new BizException("加密出错", e);
         }
         return returnStr;
     }
@@ -309,8 +309,8 @@ public class RSAUtils {
                 byte[] outBytes = cipher.doFinal(inbytes);
                 returnStr += HexPlus.encode(outBytes);
             }
-        } catch (RuntimeException e) {
-            throw new RuntimeException("解密出错", e);
+        } catch (BizException e) {
+            throw new BizException("解密出错", e);
         }
         return new String(HexPlus.decode(returnStr), coderName);
     }

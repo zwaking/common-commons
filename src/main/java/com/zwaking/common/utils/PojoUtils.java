@@ -1,14 +1,15 @@
 package com.zwaking.common.utils;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * @author waking
+ * @date 2020/11/25 11:25
  */
+@Log4j2
 public class PojoUtils {
-
-    private static Logger logger = LogManager.getLogger();
 
     /**
      * 验证对象属性是否为空
@@ -21,12 +22,12 @@ public class PojoUtils {
         try {
             for (String filedname : filedsnames) {
                 if (obj.getClass().getMethod("get" + StringUtils.upperCaseFirstLetter(filedname)).invoke(obj) == null) {
-                    logger.debug("obj.getClass()中" + filedname + "为空");
+                    log.debug("obj.getClass()中" + filedname + "为空");
                     return false;
                 }
             }
         } catch (Exception e) {
-            logger.error("验证对象属性是否为空发生异常", e);
+            log.error("验证对象属性是否为空发生异常", e);
             return false;
         }
         return true;

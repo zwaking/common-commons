@@ -1,5 +1,9 @@
 package com.zwaking.common.exception;
 
+/**
+ * @author waking
+ * @date 2020/11/25 11:25
+ */
 public class BizException extends RuntimeException {
 
     private long exceptionId = -1;

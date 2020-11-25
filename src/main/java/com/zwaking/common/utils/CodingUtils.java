@@ -7,7 +7,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * @author zhouy
+ * @author waking
+ * @date 2020/11/25 11:25
  */
 public class CodingUtils {
 

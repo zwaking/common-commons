@@ -1,12 +1,10 @@
 package com.zwaking.common.utils;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
 
 /**
- * @author Lincoln
+ * @author waking
+ * @date 2020/11/25 11:25
  * @title 字符串工具类
  * @description 提供操作字符串的常用工具方法
  */
@@ -67,7 +65,7 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public synchronized static String trimToBlank(String str) {
+    public static String trimToBlank(String str) {
         boolean boo = str == null
                 || str.trim().equals("")
                 || str.trim().toLowerCase().equals("null");

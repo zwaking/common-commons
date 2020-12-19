@@ -6,26 +6,19 @@ package com.zwaking.common.base;
  */
 public class BaseResponseObject<T> extends BaseObject {
 
-    /**
-     * 请求成功
-     */
-    public final static String RES_CODE_C_SUCCESS = "0000";
-    /**
-     * 系统错误
-     */
-    public final static String RES_CODE_E_SYSTEM = "9999";
-    /**
-     * 登录错误
-     */
-    public final static String RES_CODE_E_LOGIN = "8000";
-    /**
-     * 权限验证失败
-     */
-    public final static String RES_CODE_E_ACCESS_DENIED = "8001";
-
     private String resCode;
     private String resMsg;
     private T resBody;
+
+    public BaseResponseObject() {
+        this.resCode = ResponseCode.RES_CODE_C_SUCCESS.getCode();
+        this.resMsg = ResponseCode.RES_CODE_C_SUCCESS.getCodeMsg();
+    }
+
+    public BaseResponseObject(T t) {
+        this();
+        this.resBody = t;
+    }
 
     public String getResCode() {
         return resCode;

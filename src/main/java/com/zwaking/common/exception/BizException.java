@@ -1,40 +1,30 @@
 package com.zwaking.common.exception;
 
+import com.zwaking.common.base.ResponseCode;
+
 /**
  * @author waking
  * @date 2020/11/25 11:25
  */
 public class BizException extends RuntimeException {
 
-    private long exceptionId = -1;
+    private ResponseCode responseCode = ResponseCode.RES_CODE_E_SYSTEM;
 
-    public BizException() {
-        super();
+    public BizException(ResponseCode responseCode) {
+        super("BusinessException[responseCode=" + responseCode + "]");
+        this.responseCode = responseCode;
     }
 
-    public BizException(String message) {
-        super(message);
+    public BizException(ResponseCode responseCode, String message) {
+        super("BusinessException[responseCode=" + responseCode + ",message=" + message + "]");
     }
 
-    public BizException(long exceptionId) {
-        super("BusinessException[exId=" + exceptionId + "]");
-
-        this.exceptionId = exceptionId;
-    }
-
-    public BizException(Throwable cause) {
-        super(cause);
-    }
-
-    public BizException(String message, Throwable cause) {
+    private BizException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public BizException(long exceptionId, Throwable cause) {
-        super("BusinessException[exId=" + exceptionId + "]", cause);
-    }
-
-    public long getExceptionId() {
-        return exceptionId;
+    public static BizException getBizException(ResponseCode responseCode, String message, Throwable cause) {
+        message = "BusinessException[responseCode=" + responseCode + ",message=" + message + "]";
+        return new BizException(message, cause);
     }
 }

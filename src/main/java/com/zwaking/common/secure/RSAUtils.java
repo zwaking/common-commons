@@ -176,7 +176,7 @@ public class RSAUtils {
             byte[] bytes = Base64Coder.decodeBASE64(stringBuffer.toString());
             keyStr = HexPlus.encode(bytes);
         } catch (Exception e) {
-            throw new BizException("取得密钥字符串出错", e);
+            throw new RuntimeException("取得密钥字符串出错", e);
         } finally {
             if (bufferedReader != null) {
                 try {
@@ -202,7 +202,7 @@ public class RSAUtils {
             KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
             publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
         } catch (Exception e) {
-            throw new BizException("获取公钥Key出错", e);
+            throw new RuntimeException("获取公钥Key出错", e);
         }
         return publicKey;
     }
@@ -230,7 +230,7 @@ public class RSAUtils {
             KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
             privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
         } catch (Exception e) {
-            throw new BizException("取得密钥Key出错", e);
+            throw new RuntimeException("取得密钥Key出错", e);
         }
         return privateKey;
     }
@@ -274,7 +274,7 @@ public class RSAUtils {
                 returnStr += HexPlus.encode(outBytes);
             }
         } catch (BizException e) {
-            throw new BizException("加密出错", e);
+            throw new RuntimeException("加密出错", e);
         }
         return returnStr;
     }
@@ -310,7 +310,7 @@ public class RSAUtils {
                 returnStr += HexPlus.encode(outBytes);
             }
         } catch (BizException e) {
-            throw new BizException("解密出错", e);
+            throw new RuntimeException("解密出错", e);
         }
         return new String(HexPlus.decode(returnStr), coderName);
     }

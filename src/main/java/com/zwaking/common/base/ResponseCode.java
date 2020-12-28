@@ -24,6 +24,10 @@ public enum ResponseCode {
      */
     RES_CODE_E_TOKEN_DENIED("8002","Token无效"),
     /**
+     * Token无效
+     */
+    RES_CODE_E_LOGIN_UNBIND("8003","未绑定平台账号"),
+    /**
      * 操作失败
      */
     RES_CODE_E_OPERATION("7000","操作失败"),

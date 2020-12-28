@@ -2,13 +2,16 @@ package com.zwaking.common.exception;
 
 import com.zwaking.common.base.ResponseCode;
 
+import lombok.Getter;
+
 /**
  * @author waking
  * @date 2020/11/25 11:25
  */
 public class BizException extends RuntimeException {
 
-    private ResponseCode responseCode = ResponseCode.RES_CODE_E_SYSTEM;
+    @Getter
+    private ResponseCode responseCode;
 
     public BizException(ResponseCode responseCode) {
         super("BusinessException[responseCode=" + responseCode + "]");
@@ -17,14 +20,20 @@ public class BizException extends RuntimeException {
 
     public BizException(ResponseCode responseCode, String message) {
         super("BusinessException[responseCode=" + responseCode + ",message=" + message + "]");
+        this.responseCode = responseCode;
     }
 
-    private BizException(String message, Throwable cause) {
+    private BizException(ResponseCode responseCode, String message, Throwable cause) {
         super(message, cause);
+        this.responseCode = responseCode;
     }
 
-    public static BizException getBizException(ResponseCode responseCode, String message, Throwable cause) {
+    public static BizException getNewInstanse(String message) {
+        return new BizException(ResponseCode.RES_CODE_E_OPERATION, message);
+    }
+
+    public static BizException getNewInstanse(ResponseCode responseCode, String message, Throwable cause) {
         message = "BusinessException[responseCode=" + responseCode + ",message=" + message + "]";
-        return new BizException(message, cause);
+        return new BizException(responseCode, message, cause);
     }
 }

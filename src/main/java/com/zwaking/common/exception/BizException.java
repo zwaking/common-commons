@@ -32,6 +32,10 @@ public class BizException extends RuntimeException {
         return new BizException(ResponseCode.RES_CODE_E_OPERATION, message);
     }
 
+    public static BizException getNewInstanse(String message, Throwable cause) {
+        return BizException.getNewInstanse(ResponseCode.RES_CODE_E_OPERATION, message, cause);
+    }
+
     public static BizException getNewInstanse(ResponseCode responseCode, String message, Throwable cause) {
         message = "BusinessException[responseCode=" + responseCode + ",message=" + message + "]";
         return new BizException(responseCode, message, cause);

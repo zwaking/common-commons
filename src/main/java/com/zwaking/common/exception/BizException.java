@@ -14,12 +14,12 @@ public class BizException extends RuntimeException {
     private ResponseCode responseCode;
 
     public BizException(ResponseCode responseCode) {
-        super("BusinessException[responseCode=" + responseCode + "]");
+        super(responseCode.getCodeMsg());
         this.responseCode = responseCode;
     }
 
     public BizException(ResponseCode responseCode, String message) {
-        super("BusinessException[responseCode=" + responseCode + ",message=" + message + "]");
+        super(message);
         this.responseCode = responseCode;
     }
 
@@ -37,7 +37,6 @@ public class BizException extends RuntimeException {
     }
 
     public static BizException getNewInstanse(ResponseCode responseCode, String message, Throwable cause) {
-        message = "BusinessException[responseCode=" + responseCode + ",message=" + message + "]";
         return new BizException(responseCode, message, cause);
     }
 }

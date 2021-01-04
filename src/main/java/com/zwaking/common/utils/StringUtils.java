@@ -1,6 +1,7 @@
 package com.zwaking.common.utils;
 
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author waking
@@ -39,9 +40,7 @@ public class StringUtils {
      * @return
      */
     public static boolean isBlank(String str) {
-        return str == null
-                || str.trim().equals("")
-                || str.trim().toLowerCase().equals("null");
+        return str == null || str.trim().equals("") || str.trim().toLowerCase().equals("null");
     }
 
     /**
@@ -66,9 +65,7 @@ public class StringUtils {
      * @return
      */
     public static String trimToBlank(String str) {
-        boolean boo = str == null
-                || str.trim().equals("")
-                || str.trim().toLowerCase().equals("null");
+        boolean boo = str == null || str.trim().equals("") || str.trim().toLowerCase().equals("null");
         if (boo) {
             return "";
         }
@@ -97,8 +94,7 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static boolean valiArgInArray(Object[] array,
-                                         Object str) {
+    public static boolean valiArgInArray(Object[] array, Object str) {
         if (array != null && array.length > 0) {
             if (!array[0].getClass().equals(str.getClass())) {
                 return false;
@@ -124,8 +120,7 @@ public class StringUtils {
     /**
      * 左补零方法
      */
-    public static String leftFillZero(String str,
-                                      int length) {
+    public static String leftFillZero(String str, int length) {
         if (str == null) {
             return null;
         }
@@ -145,8 +140,17 @@ public class StringUtils {
     public static String upperCaseFirstLetter(String str) {
         char[] ch = str.toCharArray();
         if (ch[0] >= 'a' && ch[0] <= 'z') {
-            ch[0] = (char) (ch[0] - 32);
+            ch[0] = (char)(ch[0] - 32);
         }
         return new String(ch);
+    }
+
+    /**
+     * 获取32位随机UUID
+     * 
+     * @return
+     */
+    public static String get32UUID() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }

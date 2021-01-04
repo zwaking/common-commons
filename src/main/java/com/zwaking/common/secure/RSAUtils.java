@@ -236,7 +236,7 @@ public class RSAUtils {
     }
 
     /**
-     * 根据公钥文件路径获取公钥
+     * 根据私钥文件路径获取私钥
      *
      * @param keyPath
      * @return

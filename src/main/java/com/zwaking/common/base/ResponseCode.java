@@ -34,6 +34,14 @@ public enum ResponseCode {
      */
     RES_CODE_E_OPERATION("7000", "操作失败"),
     /**
+     * 操作失败
+     */
+    RES_CODE_E_USER_NOEFOUND("7100", "用户信息不存在"),
+    /**
+     * 操作失败
+     */
+    RES_CODE_E_USER_BINDED("7101", "用户已绑定其他openId"),
+    /**
      * 系统错误
      */
     RES_CODE_E_SYSTEM("9999", "系统错误");

@@ -153,4 +153,15 @@ public class StringUtils {
     public static String get32UUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
+
+    /**
+     * 获取指定前缀的随机UUID
+     *
+     * @param prefix
+     * @param length
+     * @return
+     */
+    public static String getUUID(String prefix, int length) {
+        return (isEmpty(prefix) ? "" : prefix) + get32UUID().substring(0, length - prefix.length());
+    }
 }

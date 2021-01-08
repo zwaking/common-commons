@@ -26,7 +26,7 @@ public enum ResponseCode {
      */
     RES_CODE_E_TOKEN_DENIED("8002", "Token无效"),
     /**
-     * Token无效
+     * 未绑定平台账号
      */
     RES_CODE_E_LOGIN_UNBIND("8003", "未绑定平台账号"),
     /**
@@ -34,13 +34,17 @@ public enum ResponseCode {
      */
     RES_CODE_E_OPERATION("7000", "操作失败"),
     /**
-     * 操作失败
+     * 用户信息不存在
      */
-    RES_CODE_E_USER_NOEFOUND("7100", "用户信息不存在"),
+    RES_CODE_E_USER_NOTFOUND("7100", "用户信息不存在"),
     /**
-     * 操作失败
+     * 用户已绑定其他openId
      */
     RES_CODE_E_USER_BINDED("7101", "用户已绑定其他openId"),
+    /**
+     * 品类权限未支付
+     */
+    RES_CODE_E_CATEGORY_NO_PAID("6000", "品类权限未支付"),
     /**
      * 系统错误
      */

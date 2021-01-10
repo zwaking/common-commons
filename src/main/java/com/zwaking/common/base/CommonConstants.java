@@ -7,7 +7,7 @@ package com.zwaking.common.base;
  * @date 2020/12/29
  */
 public class CommonConstants {
-
+    public final static String STRING_BLANK = "";
     /**
      * 常规是否：是
      */

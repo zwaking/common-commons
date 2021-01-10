@@ -6,6 +6,7 @@ import java.security.Security;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -21,18 +22,11 @@ import com.zwaking.common.utils.HexPlus;
 public class AESUtils {
 
     public static final String TRANSFORMATION_AESCBCPKCS7PADDING = "AES/CBC/PKCS7Padding";
+    public static final String TRANSFORMATION_AESGCMNOPADDING = "AES/GCM/NoPadding";
     // 加密算法
+    private static final int TAG_LENGTH_BIT = 128;
     private static final String ALGORITHM = "AES";
     private static final Provider wechatProvider = new BouncyCastleProvider();
-
-    public static void main(String[] args) {
-        AESUtils aesUtils = new AESUtils();
-        String key = "Mano/Bq1z9h/sKYN2QnW6w==";
-        String iv = "lK6Fze1oRBfzLBRpGXVo4Q==";
-        String encryptedData =
-                "IrQP2IINhLHhhtVOOhCDMW5/CssxcZten/LC9/l55pbFoS+vUPtgd2XG8/Z4Ieu6+NdMjEG1cF06Zl6LECnKuUGHq432rhPk1mN12KsxlSHpjh3PZPZtpdiSZV36+W4YdcjOu9G8TsksQvavIfQSKW3JFkbqtsDckefQ5jpifVQcpidLjl/xkv/UeqlGAMGSrCLIynyeOtrQEU5PU9CA7fbOKx1Bxgz6Z/E/jXrCDrKpJ1PmfHCw6xRb0i3Jg4LPXpM8snPMJI8UO22wivKdnnEYZI4OBo1P8soXLAbeDsk7SbuA4+smmbrFLovMjBdecutmnu5QO/AXCsZysmcEmmSfqlTQfHtECEuKZeHNxaDgLqZT0rp2pUuXaNW0fgvKIt+HsA24QvnT+e8J49GTU68tetpd7ogwDDk5A8O5w9K+e0zLmEpUZTwxJG2zKu6vk3OzkY4v5NemDhsvEsUf3wUBQZClBkWoHFqMItd1jw0=";
-        System.out.println(aesUtils.wechatDecryptToString(key, iv, encryptedData));
-    }
 
     /**
      *
@@ -50,11 +44,39 @@ public class AESUtils {
         byte[] encryptedDataBytes = Base64Coder.decodeBASE64(encryptedData);
 
         SecretKeySpec skeySpec = new SecretKeySpec(keyBytes, ALGORITHM);
-        Cipher cipher = null;
         try {
-            cipher = Cipher.getInstance(TRANSFORMATION_AESCBCPKCS7PADDING, wechatProvider);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION_AESCBCPKCS7PADDING, wechatProvider);
             IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivParameterSpec);
+
+            byte[] mingtexts = cipher.doFinal(encryptedDataBytes);
+
+            return new String(mingtexts);
+        } catch (Exception e) {
+            throw new RuntimeException("解密发生异常", e);
+        }
+    }
+
+    /**
+     *
+     * @param key
+     * @param nonce
+     * @param associated_data
+     * @param encryptedData
+     *            base64的密文
+     * @return
+     */
+    public String wechatDecryptToString(String key, String nonce, String associated_data, String encryptedData) {
+        byte[] encryptedDataBytes = Base64Coder.decodeBASE64(encryptedData);
+
+        SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(), ALGORITHM);
+        try {
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION_AESGCMNOPADDING, wechatProvider);
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BIT, nonce.getBytes());
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, gcmParameterSpec);
+            if (associated_data != null) {
+                cipher.updateAAD(associated_data.getBytes());
+            }
 
             byte[] mingtexts = cipher.doFinal(encryptedDataBytes);
 

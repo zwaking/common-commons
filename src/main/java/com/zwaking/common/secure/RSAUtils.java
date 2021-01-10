@@ -1,16 +1,10 @@
 package com.zwaking.common.secure;
 
-import com.zwaking.common.exception.BizException;
-import com.zwaking.common.utils.Base64Coder;
-import com.zwaking.common.utils.HexPlus;
-
-import javax.crypto.Cipher;
 import java.io.*;
 import java.math.BigInteger;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -18,22 +12,61 @@ import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+import javax.crypto.Cipher;
+
+import com.zwaking.common.base.CommonConstants;
+import com.zwaking.common.exception.BizException;
+import com.zwaking.common.utils.Base64Coder;
+import com.zwaking.common.utils.HexPlus;
+
 /**
  * @author waking
  * @date 2020/11/25 11:25
  */
 public class RSAUtils {
 
+    private final static String CLASS_PATH_PREFIX = "classpath:";
+    // 加密算法
+    private static final String ALGORITHM = "RSA";
+    // 微信签名算法
+    private static final String ALGORITHM_WECHAT = "SHA256withRSA";
+    // CIPHER算法
+    private static final String CIPHER_NAME = "RSA/ECB/PKCS1Padding";
+    // RSA加密长度
+    private static final int encryptLen = 100;
+    // RSA解密长度
+    private static final int decryptLen = 128;
     public String[] TRANSFORMATIONS = {"RSA/ECB/PKCS1Padding"};
 
-    //加密算法
-    private static final String ALGORITHM = "RSA";
-    //CIPHER算法
-    private static final String CIPHER_NAME = "RSA/ECB/PKCS1Padding";
-    //RSA加密长度
-    private static final int encryptLen = 100;
-    //RSA解密长度
-    private static final int decryptLen = 128;
+    /**
+     * 从字节数组得到公钥
+     *
+     * @param pubKeyBytes
+     * @return
+     * @throws Exception
+     */
+    public static PublicKey getPublicKeyFromX509(byte[] pubKeyBytes) throws Exception {
+        X509EncodedKeySpec pubX509 = new X509EncodedKeySpec(pubKeyBytes);
+        KeyFactory keyFac = KeyFactory.getInstance("RSA");
+        PublicKey pubKey = keyFac.generatePublic(pubX509);
+        return pubKey;
+    }
+
+    /**
+     * 根据公钥文件路径获取公钥
+     *
+     * @param path
+     * @return
+     * @throws Exception
+     */
+    public static RSAPublicKey getPublicKeyPair(String path) throws Exception {
+        FileInputStream fis = new FileInputStream(path);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        RSAPublicKey rsaPublicKey = (RSAPublicKey)ois.readObject();
+        ois.close();
+        fis.close();
+        return rsaPublicKey;
+    }
 
     /**
      * 生成公钥
@@ -48,7 +81,7 @@ public class RSAUtils {
 
         RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(N, E);
 
-        RSAPublicKey pubKey = (RSAPublicKey) keyFactory.generatePublic(pubKeySpec);
+        RSAPublicKey pubKey = (RSAPublicKey)keyFactory.generatePublic(pubKeySpec);
 
         return pubKey;
     }
@@ -67,28 +100,15 @@ public class RSAUtils {
      * @return
      * @throws Exception
      */
-    public RSAPrivateKey getPrivateKey(BigInteger N, BigInteger E, BigInteger D, BigInteger P, BigInteger Q, BigInteger DP, BigInteger DQ, BigInteger QP) throws Exception {
+    public RSAPrivateKey getPrivateKey(BigInteger N, BigInteger E, BigInteger D, BigInteger P, BigInteger Q,
+        BigInteger DP, BigInteger DQ, BigInteger QP) throws Exception {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
         RSAPrivateCrtKeySpec privKeySpec = new RSAPrivateCrtKeySpec(N, E, D, P, Q, DP, DQ, QP);
 
-        RSAPrivateKey priKey = (RSAPrivateKey) keyFactory.generatePrivate(privKeySpec);
+        RSAPrivateKey priKey = (RSAPrivateKey)keyFactory.generatePrivate(privKeySpec);
 
         return priKey;
-    }
-
-    /**
-     * 从字节数组得到公钥
-     *
-     * @param pubKeyBytes
-     * @return
-     * @throws Exception
-     */
-    public static PublicKey getPublicKeyFromX509(byte[] pubKeyBytes) throws Exception {
-        X509EncodedKeySpec pubX509 = new X509EncodedKeySpec(pubKeyBytes);
-        KeyFactory keyFac = KeyFactory.getInstance("RSA");
-        PublicKey pubKey = keyFac.generatePublic(pubX509);
-        return pubKey;
     }
 
     /**
@@ -133,22 +153,6 @@ public class RSAUtils {
         mitextHex = HexPlus.encode(mitexts);
 
         return mitextHex;
-    }
-
-    /**
-     * 根据公钥文件路径获取公钥
-     *
-     * @param path
-     * @return
-     * @throws Exception
-     */
-    public static RSAPublicKey getPublicKeyPair(String path) throws Exception {
-        FileInputStream fis = new FileInputStream(path);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        RSAPublicKey rsaPublicKey = (RSAPublicKey) ois.readObject();
-        ois.close();
-        fis.close();
-        return rsaPublicKey;
     }
 
     /**
@@ -313,6 +317,37 @@ public class RSAUtils {
             throw new RuntimeException("解密出错", e);
         }
         return new String(HexPlus.decode(returnStr), coderName);
+    }
+
+    public boolean wechatSignatureVerify(String timestamp, String nonce, String body, String pubKeyPath,
+        String signature) {
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(timestamp).append("\n");
+        sb.append(nonce).append("\n");
+        sb.append(body).append("\n");
+
+        String signatureSrc = sb.toString();
+
+        try {
+            Signature _signature = Signature.getInstance(ALGORITHM_WECHAT);
+
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+
+            if (pubKeyPath.startsWith(CLASS_PATH_PREFIX)) {
+                pubKeyPath = pubKeyPath.replaceFirst(CLASS_PATH_PREFIX, CommonConstants.STRING_BLANK);
+                pubKeyPath = RSAUtils.class.getClassLoader().getResource(pubKeyPath).getPath();
+            }
+
+            Certificate certificate = cf.generateCertificate(new FileInputStream(new File(pubKeyPath)));
+
+            _signature.initVerify(certificate);
+            _signature.update(signatureSrc.getBytes());
+
+            return _signature.verify(Base64Coder.decodeBASE64(signature));
+        } catch (Exception e) {
+            throw new RuntimeException("验签出错", e);
+        }
     }
 
 }

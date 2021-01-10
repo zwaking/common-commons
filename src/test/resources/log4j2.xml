@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <Properties>
+        <Property name="logfilepath">${env:ENV_LOG_HOME}/common-thirdchannel-wechat/logs.log</Property>
+    </Properties>
+
+    <Appenders>
+        <!--控制台输出-->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="[%d{yyyMMddHHmmss:SSS}][%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}][%p] - %l - %m%n"/>
+        </Console>
+        <!--日志文件输出-->
+        <RollingRandomAccessFile name="logFile" fileName="${logfilepath}" filePattern="${logfilepath}.%d{yyyyMMdd}">
+            <PatternLayout
+                    pattern="[%d{yyyMMddHHmmss:SSS}][%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}][%p] - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.zwaking" level="debug" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="logFile"/>
+        </Logger>
+        <Root level="error">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="logFile"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -25,11 +25,8 @@ import com.zwaking.common.utils.HexPlus;
  */
 public class RSAUtils {
 
-    private final static String CLASS_PATH_PREFIX = "classpath:";
     // 加密算法
     private static final String ALGORITHM = "RSA";
-    // 微信签名算法
-    private static final String ALGORITHM_WECHAT = "SHA256withRSA";
     // CIPHER算法
     private static final String CIPHER_NAME = "RSA/ECB/PKCS1Padding";
     // RSA加密长度
@@ -317,37 +314,6 @@ public class RSAUtils {
             throw new RuntimeException("解密出错", e);
         }
         return new String(HexPlus.decode(returnStr), coderName);
-    }
-
-    public boolean wechatSignatureVerify(String timestamp, String nonce, String body, String pubKeyPath,
-        String signature) {
-
-        StringBuffer sb = new StringBuffer();
-        sb.append(timestamp).append("\n");
-        sb.append(nonce).append("\n");
-        sb.append(body).append("\n");
-
-        String signatureSrc = sb.toString();
-
-        try {
-            Signature _signature = Signature.getInstance(ALGORITHM_WECHAT);
-
-            CertificateFactory cf = CertificateFactory.getInstance("X509");
-
-            if (pubKeyPath.startsWith(CLASS_PATH_PREFIX)) {
-                pubKeyPath = pubKeyPath.replaceFirst(CLASS_PATH_PREFIX, CommonConstants.STRING_BLANK);
-                pubKeyPath = RSAUtils.class.getClassLoader().getResource(pubKeyPath).getPath();
-            }
-
-            Certificate certificate = cf.generateCertificate(new FileInputStream(new File(pubKeyPath)));
-
-            _signature.initVerify(certificate);
-            _signature.update(signatureSrc.getBytes());
-
-            return _signature.verify(Base64Coder.decodeBASE64(signature));
-        } catch (Exception e) {
-            throw new RuntimeException("验签出错", e);
-        }
     }
 
 }

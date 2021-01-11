@@ -6,7 +6,6 @@ import java.security.Security;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -22,11 +21,9 @@ import com.zwaking.common.utils.HexPlus;
 public class AESUtils {
 
     public static final String TRANSFORMATION_AESCBCPKCS7PADDING = "AES/CBC/PKCS7Padding";
-    public static final String TRANSFORMATION_AESGCMNOPADDING = "AES/GCM/NoPadding";
     // 加密算法
-    private static final int TAG_LENGTH_BIT = 128;
     private static final String ALGORITHM = "AES";
-    private static final Provider wechatProvider = new BouncyCastleProvider();
+    private static final Provider bouncyCastleProvider = new BouncyCastleProvider();
 
     /**
      *
@@ -38,45 +35,16 @@ public class AESUtils {
      *            base64的密文
      * @return
      */
-    public String wechatDecryptToString(String key, String iv, String encryptedData) {
+    public String decryptToString(String key, String iv, String encryptedData) {
         byte[] keyBytes = Base64Coder.decodeBASE64(key);
         byte[] ivBytes = Base64Coder.decodeBASE64(iv);
         byte[] encryptedDataBytes = Base64Coder.decodeBASE64(encryptedData);
 
         SecretKeySpec skeySpec = new SecretKeySpec(keyBytes, ALGORITHM);
         try {
-            Cipher cipher = Cipher.getInstance(TRANSFORMATION_AESCBCPKCS7PADDING, wechatProvider);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION_AESCBCPKCS7PADDING, bouncyCastleProvider);
             IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, ivParameterSpec);
-
-            byte[] mingtexts = cipher.doFinal(encryptedDataBytes);
-
-            return new String(mingtexts);
-        } catch (Exception e) {
-            throw new RuntimeException("解密发生异常", e);
-        }
-    }
-
-    /**
-     *
-     * @param key
-     * @param nonce
-     * @param associated_data
-     * @param encryptedData
-     *            base64的密文
-     * @return
-     */
-    public String wechatDecryptToString(String key, String nonce, String associated_data, String encryptedData) {
-        byte[] encryptedDataBytes = Base64Coder.decodeBASE64(encryptedData);
-
-        SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(), ALGORITHM);
-        try {
-            Cipher cipher = Cipher.getInstance(TRANSFORMATION_AESGCMNOPADDING, wechatProvider);
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(TAG_LENGTH_BIT, nonce.getBytes());
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec, gcmParameterSpec);
-            if (associated_data != null) {
-                cipher.updateAAD(associated_data.getBytes());
-            }
 
             byte[] mingtexts = cipher.doFinal(encryptedDataBytes);
 
@@ -94,19 +62,16 @@ public class AESUtils {
      * @return
      */
     public String getRawKeyToHex(Provider provider, String providerName) {
-        try {
-            Security.addProvider(provider);
-            KeyGenerator kgen = KeyGenerator.getInstance(ALGORITHM, providerName);
-            kgen.init(128);
-
-            SecretKey skey = kgen.generateKey();
-            byte[] raw = skey.getEncoded();
-            return HexPlus.encode(raw);
-        } catch (Exception e) {
-            return null;
-        }
+        return HexPlus.encode(this.getRawKey(provider, providerName));
     }
 
+    /**
+     * 获取aes密钥
+     *
+     * @param provider
+     * @param providerName
+     * @return
+     */
     public byte[] getRawKey(Provider provider, String providerName) {
         try {
             Security.addProvider(provider);
@@ -116,7 +81,7 @@ public class AESUtils {
             SecretKey skey = kgen.generateKey();
             return skey.getEncoded();
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException("获取RawKey发生异常", e);
         }
     }
 

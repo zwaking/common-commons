@@ -8,6 +8,7 @@ package com.zwaking.common.base;
  */
 public class CommonConstants {
     public final static String STRING_BLANK = "";
+    public final static String CLASS_PATH_PREFIX = "classpath:";
     /**
      * 常规是否：是
      */

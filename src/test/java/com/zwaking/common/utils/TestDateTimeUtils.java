@@ -1,4 +1,4 @@
-package com.zwaking.common.secure;
+package com.zwaking.common.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

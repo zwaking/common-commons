@@ -821,11 +821,45 @@ public class DateTimeUtils {
         return format + buffer.toString();
     }
 
-    public static void main(String[] args) {
-        try {
-            System.out.println(getDateTimeForword(new Date(), 80, "秒"));
-        } catch (Exception e) {
-            e.printStackTrace();
+    /**
+     * 生成时间区间
+     * 
+     * @param beginDate
+     *            开始时间
+     * @param maxDay
+     *            差距最大天数
+     * @return
+     */
+    public static Date[] randomDateTimeInterval(Date beginDate, int maxDay) {
+        Date _beginDate = randomDateTime(beginDate, null);
+        Date endDate = getDateTimeForword(_beginDate, maxDay);
+        Date _endDate = randomDateTime(_beginDate, endDate);
+        return new Date[] {_beginDate, _endDate};
+    }
+
+    /**
+     * 获取给定范围内的随机时间
+     * 
+     * @param beginDate
+     * @param endDate
+     * @return
+     */
+    public static Date randomDateTime(Date beginDate, Date endDate) {
+        Date end = endDate == null ? new Date() : endDate;
+        if (beginDate.getTime() >= end.getTime()) {
+            return null;
         }
+        long date = random(beginDate.getTime(), end.getTime());
+
+        return new Date(date);
+    }
+
+    private static long random(long begin, long end) {
+        long rtn = begin + (long)(Math.random() * (end - begin));
+        // 如果返回的是开始时间和结束时间，则递归调用本函数查找随机值
+        if (rtn == begin || rtn == end) {
+            return random(begin, end);
+        }
+        return rtn;
     }
 }

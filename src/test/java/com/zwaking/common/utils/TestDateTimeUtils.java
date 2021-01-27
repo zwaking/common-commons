@@ -42,4 +42,13 @@ public class TestDateTimeUtils {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void testGetOddDateNum() {
+        try {
+            Date endDate = DateTimeUtils.getToDateObject("2021-03-27 11:30:00");
+            System.out.println(DateTimeUtils.getOddDateNum(new Date(), endDate));
+        } catch (Exception e) {
+        }
+    }
 }

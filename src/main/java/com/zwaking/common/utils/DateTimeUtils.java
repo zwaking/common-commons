@@ -290,15 +290,23 @@ public class DateTimeUtils {
      * @return
      */
     public static int getOddDateNum(String beginTime, String endTime) throws ParseException {
-        Date dateBegin = getToDateObject(beginTime);
-        System.out.println("dateBegin=" + dateBegin);
-        Date dateEnd = getToDateObject(endTime);
-        System.out.println("dateEnd=" + dateEnd);
-        if ((dateEnd.getTime() - dateBegin.getTime()) < 0) {
-            return -1;
-        }
-        int odd = (int)((dateEnd.getTime() - dateBegin.getTime()) / (dateSecond));
-        return odd;
+        return getOddDateNum(getToDateObject(beginTime), getToDateObject(endTime));
+    }
+
+    /**
+     * 求两个日期的天数之差
+     *
+     * @param beginTime
+     *            开始时间
+     * @param endTime
+     *            结束时间
+     * @return
+     */
+    public static int getOddDateNum(Date beginTime, Date endTime) throws ParseException {
+        beginTime = getDateTimeForwordLastsecond(beginTime, 0);
+        endTime = getDateTimeForwordLastsecond(endTime, 0);
+        int odd = (int)((beginTime.getTime() - endTime.getTime()) / (dateSecond));
+        return odd < 0 ? 0 - odd : odd;
     }
 
     /**

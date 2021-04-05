@@ -43,6 +43,14 @@ public enum ResponseCode {
      */
     RES_CODE_E_USER_BINDED("7101", "用户已绑定其他openId"),
     /**
+     * 相同的登录名已被会员绑定，如果是同一个人请直接从后台配置为管理员
+     */
+    RES_CODE_E_USER_SAMELOGINNAME("7102", "相同的登录名已被会员绑定，如果是同一个人请直接从后台配置为管理员"),
+    /**
+     * 相同的登录名已存在，请联系管理员
+     */
+    RES_CODE_E_USER_DUPLICATELOGINNAME("7103", "相同的登录名已存在，请联系管理员"),
+    /**
      * 品类权限未支付
      */
     RES_CODE_E_CATEGORY_NO_PAID("6000", "品类权限未支付"),

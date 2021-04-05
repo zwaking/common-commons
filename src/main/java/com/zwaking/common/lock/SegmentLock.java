@@ -9,7 +9,11 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class SegmentLock<T> {
     private final HashMap<Integer, ReentrantLock> lockMap = new HashMap<>();
-    private Integer segments = 16;// 默认分段数量
+
+    /**
+     * 默认分段数量
+     */
+    private Integer segments = 16;
 
     public SegmentLock() {
         init(null, false);

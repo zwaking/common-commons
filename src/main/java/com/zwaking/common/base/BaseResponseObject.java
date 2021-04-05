@@ -1,6 +1,7 @@
 package com.zwaking.common.base;
 
 /**
+ * @title http协议返回信息的基础类
  * @author waking
  * @date 2020/11/30
  */

@@ -5,6 +5,7 @@ import com.zwaking.common.utils.JsonUtils;
 import lombok.Getter;
 
 /**
+ * @title 返回信息的公用返回码
  * @author waking
  * @date 2020/11/30
  */

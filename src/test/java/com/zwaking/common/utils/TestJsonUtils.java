@@ -8,19 +8,6 @@ import org.junit.jupiter.api.Test;
 public class TestJsonUtils {
 
     @Test
-    public void testBean2Json() {
-        List<TTT> tttList = new ArrayList<>();
-        TTT ttt1 = new TTT();
-        ttt1.setName("ttt1");
-        TTT ttt2 = new TTT();
-        TTT ttt3 = new TTT();
-        tttList.add(ttt1);
-        tttList.add(ttt2);
-        tttList.add(ttt3);
-        System.out.println(JsonUtils.bean2Json(ttt1).get("name"));
-    }
-
-    @Test
     public void testBean2Map() {
         TTT ttt = new TTT();
         ttt.setName("ttt1");

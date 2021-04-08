@@ -51,19 +51,6 @@ public class JsonUtils {
         return null;
     }
 
-    /**
-     * <p>
-     * 将在下个下版本移除
-     * </p>
-     * 
-     * @see com.zwaking.common.utils.JsonUtils#bean2JsonNode(Object)
-     * @return
-     */
-    @Deprecated
-    public static ObjectNode bean2Json(Object obj) {
-        return objectMapper.convertValue(obj, ObjectNode.class);
-    }
-
     public static <T> T jsonStr2Bean(String jsonStr, Class<T> clazz) {
         T t = null;
         try {

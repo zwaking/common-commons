@@ -35,6 +35,10 @@ public enum ResponseCode {
      */
     RES_CODE_E_OPERATION("7000", "操作失败"),
     /**
+     * 操作失败
+     */
+    RES_CODE_E_ARGUMENTS("7001", "提交的参数有误"),
+    /**
      * 用户信息不存在
      */
     RES_CODE_E_USER_NOTFOUND("7100", "用户信息不存在"),

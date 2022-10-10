@@ -1,5 +1,7 @@
-package com.zwaking.common.utils;
+package com.zwaking.common.utils.oshi;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,19 +46,17 @@ import oshi.util.Util;
 /**
  * A demonstration of access to many of OSHI's capabilities
  */
-public class SystemInfoTest { // NOSONAR squid:S5786
+public class OshiUtilsTest { // NOSONAR squid:S5786
 
-    private static final Logger logger = LoggerFactory.getLogger(SystemInfoTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(OshiUtilsTest.class);
 
     static List<String> oshi = new ArrayList<>();
 
     /**
      * The main method, demonstrating use of classes.
      *
-     * @param args
-     *            the arguments (unused)
      */
-    public static void main(String[] args) {
+    public static void print() {
 
         logger.info("Initializing System...");
         SystemInfo si = new SystemInfo();
@@ -128,6 +128,25 @@ public class SystemInfoTest { // NOSONAR squid:S5786
             }
         }
         logger.info("Printing Operating System and Hardware Info:{}{}", '\n', output);
+    }
+
+    public static void main(String[] args) {
+        print();
+
+        SystemInfo systemInfo = new SystemInfo();
+        HardwareAbstractionLayer hardware = systemInfo.getHardware();
+        CentralProcessor processor = hardware.getProcessor();
+        System.out.println(processor);
+//        System.out.println(JsonUtils.bean2JsonStr(processor.getProcessorCpuLoad(5000)));
+        GlobalMemory globalMemory = hardware.getMemory();
+        System.out.println(globalMemory);
+        Long available = globalMemory.getAvailable();
+        Long total = globalMemory.getTotal();
+        System.out.println("总内存(bytes): " + total);
+        System.out.println("当前可用的内存(bytes): " + available);
+        System.out.println("剩余可用内存(bytes): " + new BigDecimal((double)(available) / (double)total * 100).setScale(2, RoundingMode.HALF_UP) + " %");
+        System.out.println("当前CPU负载: " + OshiUtils.getCpuInfo().getUsed() + " %");
+        System.out.println("当前进程信息: " + OshiUtils.getCurrentProcess());
     }
 
     private static void printOperatingSystem(final OperatingSystem os) {
